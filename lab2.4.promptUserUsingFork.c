@@ -4,26 +4,27 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-int main(void){
-
 void childTask(int i, char name[]){
 printf("Person %d ",i);
 printf("is %s.",name);
 printf("\n");
 }
 
+int main(void){
+
 char  name[100];
 
-	for(int i=1;i<5;i++){
         pid_t pid = fork();
 
         if(pid==0){
-	     // printf("Child process => PPID=%d, PID=%d\n", getppid(), getpid());
+	      for(int i=1;i<5;i++){	  
+  	      // printf("Child process => PPID=%d, PID=%d\n", getppid(), getpid());
               printf("Hi, what is your name?> ");
 	      scanf("%s", name);
 	      childTask( i, name);
-              exit(0);
           }
+           exit(0);
+	  }
 
 	else{
        // printf("Parent process => PID=%d\n", getpid());
@@ -31,7 +32,6 @@ char  name[100];
 	wait(NULL);
         printf("Job is done.\n");
         }
-	}
 
         return EXIT_SUCCESS;
      }
