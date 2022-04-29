@@ -9,17 +9,17 @@ void sigint_handler(int sig);
 char s[200];
 
 if(signal(SIGINT, sigint_handler) == SIG_ERR){
-perror("signal");
+perror("error to catch SIGINT");
 exit(1);
 }
 
 else if(signal(SIGTSTP, sigint_handler) == SIG_ERR){
-perror("signal");
+perror("error to catch SIGTSTP");
 exit(1);
 }
 
 else if(signal(SIGQUIT, sigint_handler) == SIG_ERR){
-perror("signal");
+perror("error to catch SIGQUIT");
 exit(1);
 }
 
@@ -36,6 +36,13 @@ return 0;
 }
 
 void sigint_handler(int sig){
-printf("This is a special signal handler for %s\n",signal);
+if(sig == SIGINT) 
+printf("This is a special signal handler for SIGINT\n");
+
+else if(sig == SIGTSTP)
+printf("This is a special signal handler for SIGTSTP\n");
+
+else if(sig == SIGQUIT)
+printf("This is a special signal handler for SIGQUIT\n");
 }
 
