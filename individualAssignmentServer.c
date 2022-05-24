@@ -30,7 +30,7 @@ bind(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
 printf("[+]Bind\n");
 
 listen(sockfd, BACKLOG);
-printf("[+]Listeing for the client\n");
+printf("[+]Listening for the client\n");
 
 int i = 1;
 while(i){
