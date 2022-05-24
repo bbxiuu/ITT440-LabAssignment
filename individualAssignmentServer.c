@@ -1,18 +1,21 @@
-import socket
-import random
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <time.h>
 
-quotes = [
-    "Never do today what you can do tomorrow",
-    "Nobody lies on the internet",
-    "The cake is a lie"
-]
+#define BACKLOG 10
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(("0.0.0.0", 17)) # Bind to port 17
-server.listen(5)
+int main(int argc,char **argv){
 
-while True:
-    sock, addr = server.accept()
-    quote = random.choice(quotes)
-    sock.send(f"{quote}\n")
-    sock.close()
+if(argc != 2){
+printf("Usage: %s <port>\n", argv[0]);
+exit(0);
+}
+
+int port = atoi(argv[1]);
+printf("Port: %d\n", port);
+
+}
