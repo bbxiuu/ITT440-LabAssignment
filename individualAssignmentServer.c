@@ -10,105 +10,72 @@
 #include <time.h>
 #include <string.h>
 
-#define PORT "17"
 #define BACKLOG 10
 
+int main(int argc, char *argv[] )
+{
+int socQotd, new_socket,c,msg_size;
+struct sockaddr_in server, client;
+char cl_msg[20000];
 
-void *get_in_addr(struct sockaddr *sa) {
-        if(sa->sa_family == AF_INET) {
-                return &(((struct sockaddr_in *) sa)->sin_addr);
-        } else {
-                return &(((struct sockaddr_in6 *) sa)->sin6_addr);
-        }
+//creating socket
+socQotd = socket(AF_INET,SOCK_STREAM,0);
+if(socket_desc==-1)
+{
+
+printf("Failed to create socket!");
+
 }
 
-int main(int argc, char** argv[]) {
-        vector<string> quotes;
-        FILE *in=fopen("../qotd.txt","r");
+//preparing for socket address
+server.sin_family=AF_INET;
+server.sin_addr.s_addr=INADDR_ANY;
+server.sin_port=htons(17);
 
-string filename = "../qotd.txt";
-        if(argc == 2) {
-                filename = argv[1];
-        }
-        ifstream file(filename.c_str());
-        string line;
-        while(getline(file, line)) {
-                int k = line.find("|");
-                string quote = line.substr(0, k);
-                string author = line.substr(k+1);
-                quotes.push_back("\n\"" + quote + "\"\n\n- " + author + "\n\n");
-        }*/
+//bind
+if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
+{
 
- int sockfd;
-        struct addrinfo hints, *servinfo, *p;
-        int yes = 1;
-        char s[INET6_ADDRSTRLEN];
-        int rv;
+puts("bind failed");
+return 1;
+}
+puts("bind done");
 
-        memset(&hints, 0, sizeof(hints));
-        hints.ai_family = AF_UNSPEC;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_flags = AI_PASSIVE;
+//listen
+listen (socQotd,3);
 
-        if((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
-                printf("getaddrinfo: %s\n", gai_strerror(rv));
-                return 1;
-        }
+//accept for incoming connection
+puts("Waiting for incoming connections....");
+c=sizeof(struct sockaddr_in);
 
-        for(p = servinfo; p != NULL; p = p->ai_next) {
-                if((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
-                        perror("server: socket");
-                        continue;
-                }
+//server client connection
+new_socket=accept(socQotd,(struct sockaddr *)&client,(socklen_t*)&c);
+if(new_socket<0)
+{
+perror("FAILED TO ACCEPT");
+return 1;
+}
+puts("Connection accepted");
 
-                if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
-                        perror("setsockopt");
-                        exit(1);
-                }
 
-                if(bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-                        close(sockfd);
-                        perror("socket: bind");
-                        continue;
-                }
+while((msg_size=recv(new_socket,cl_msg,20000,0))>0)
+{
+write(new_socket,cl_msg,strlen(cl_msg));
+}
 
-                break;
-        }
 
-        freeaddrinfo(servinfo);
- if(p == NULL) {
-                printf("Server failed to bind\n");
-                exit(1);
-        }
+if(msg_size==-1)
+{
+puts("FAILED TO RECEIVE MESSAGE");
+}
 
-        if(listen(sockfd, BACKLOG) == -1) {
-                perror("listen");
-                exit(1);
-        }
+else if(msg_size==0)
+{
+puts("DISCONNECTED");
+fflush(stdout);
+}
 
-        printf("server: waiting for connections on port %s...\n", PORT);
+close(socQotd);
 
-        srand(time(NULL));
-
-        while(true) {
-                struct sockaddr_storage their_addr;
-                socklen_t sin_size = sizeof(their_addr);
-                int new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
-                if(new_fd == -1) {
-                        perror("accept");
-                        continue;
-                }
-
-                inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *) &their_addr), s, sizeof(s));
-                printf("server: got connection from %s\n", s);
-
-                int daysSinceEpoch = rand() % quotes.size();
-                string k = quotes[daysSinceEpoch];
-                if(send(new_fd, k.c_str(), k.length(), 0) == -1) {
-                        perror("send");
-                }
-                close(new_fd);
-        }
-
-        return 0;
+return 0;
 }
