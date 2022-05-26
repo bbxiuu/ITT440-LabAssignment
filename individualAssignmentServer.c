@@ -32,14 +32,14 @@ server.sin_addr.s_addr=INADDR_ANY;
 server.sin_port=htons(17); //use port 17
 
 //bind
-/*if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
+if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
 {
 
 puts("bind failed");
 return 1;
 }
-puts("bind done");
-*/
+puts("Socket is successfully binded! ");
+
 
 //listen
 listen (socQotd,3);
@@ -47,6 +47,8 @@ listen (socQotd,3);
 //accept for incoming connection
 puts("Waiting for incoming connections....");
 c=sizeof(struct sockaddr_in);
+
+
 
 //server client connection
 new_socket=accept(socQotd,(struct sockaddr *)&client,(socklen_t*)&c);
