@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-int socQotd,new_socket,c;
+int socQotd,c;
 struct sockaddr_in server;
-string quotes[20000],sv_reply[20000];
+char *sent;
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
@@ -35,6 +35,8 @@ puts("connect error");
 return 1;
 }
 puts("Connected \n");
+
+printf("Value stored: %d \n", socQotd);
 
 
 close(socQotd);
