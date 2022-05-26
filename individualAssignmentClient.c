@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[])
 {
-int socQotd,c;
+int socQotd,new_socket,c;
 struct sockaddr_in server;
 char *sent;
 
