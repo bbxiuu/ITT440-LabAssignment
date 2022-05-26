@@ -11,11 +11,13 @@
 #include <string.h>
 
 #define PORT 17
+#define FILENAME "qotd.txt"
 
 int main(int argc, char *argv[])
 {
-int socQotd,new_socket,c;
+int socQotd,C_socket,c;
 struct sockaddr_in server;
+char buffer[1024];
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
@@ -37,9 +39,16 @@ return 1;
 }
 puts("Connected \n");
 
-printf("Value stored: %d \n", socQotd);
+//qotd protocol
 
+//starts here 
 
+/*bzero(buffer, 1024);
+strcpy(buffer, "Quote received! Thank you & have a nice day <3 \n");
+printf("Message from client : %s\n", buffer);
+send(socQotd, buffer, strlen(buffer), 0);
+*/
+//closes here
 close(socQotd);
 return 0;
 }
