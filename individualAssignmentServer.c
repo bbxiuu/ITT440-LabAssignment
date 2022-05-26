@@ -14,8 +14,8 @@
 
 #define PORT 17
 #define FILENAME "qotd.txt"
-#define LSIZ 128
-#define RSIZ 10
+#define LSIZ 300
+#define RSIZ 50
 
 // Return line count, but stop once the count exceeds a maximum
   int Line_Count(FILE *istream, int line_index) {
@@ -36,11 +36,13 @@
 }
 
 //function to return random quote
-char  print_random_line(FILE *istream, int line_index) {
+const char*  print_random_line(FILE *istream, int line_index) {
   Line_Count(istream, line_index);
   int ch,tot = 0;
   char line[RSIZ][LSIZ];
+  char quote[300];
   int i = 0;
+  char* quote2prnt;
 
   printf("\n");
 
@@ -51,22 +53,27 @@ char  print_random_line(FILE *istream, int line_index) {
         }
 
          tot = i+1;
-         printf("\n The quote from line %d  is : \n",line_index + 1);
+         printf("\nThe quote from line %d  is : \n",line_index + 1);
 
         for(i = 0; i < 1; ++i)
            {
-            printf(" %s\n", line[i]);
+            sprintf(quote,"%s", line[i]);
+            puts(quote);
+            strcpy(quote2prnt,quote);
            }
 
-return line_index;
-                                                        }
+
+   printf("\n");
+
+   return quote2prnt;
+                                                              }
 
 
 int main(int argc, char *argv[] )
 {
   int socQotd,new_socket,c;
   struct sockaddr_in server, client;
-  char svMsg[20000],clReply[20000];
+  char svMsg[20000],clReply[20000],quote[128];
 
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -122,10 +129,11 @@ int main(int argc, char *argv[] )
 while(1)
 {
 
-  print_random_line(istream, rand() % lc);
+  //print_random_line(istream, rand() % lc);
+  const char* qotd = print_random_line(istream, rand() % lc);
+  strcpy(svMsg, qotd);
 
-
-  strcpy(svMsg, "Quote of the day: \n");
+  //strcpy(svMsg, "Quote of the day: \n");
   printf("\n%s",svMsg);
   send(new_socket,svMsg,20000,0);
 
@@ -152,7 +160,7 @@ break;
 //closes here
 
 
- // close(socQotd);
+  close(socQotd);
 
 return 0;
 }
