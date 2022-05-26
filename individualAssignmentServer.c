@@ -12,12 +12,12 @@
 
 int main(int argc, char *argv[] )
 {
-int socQotd,c;
+int socQotd,new_socket,c;
 struct sockaddr_in server, client;
 
 //creating socket
 socQotd = socket(AF_INET,SOCK_STREAM,0);
-if(socket_desc==-1)
+if(socQotd==-1)
 {
 
 printf("Failed to create socket!");
