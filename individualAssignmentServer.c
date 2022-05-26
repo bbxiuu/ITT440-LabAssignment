@@ -14,7 +14,8 @@
 
 #define PORT 17
 #define FILENAME "qotd.txt"
-
+#define LSIZ 128
+#define RSIZ 10
 
 // Return line count, but stop once the count exceeds a maximum
   int Line_Count(FILE *istream, int line_index) {
@@ -34,25 +35,38 @@
   return lc;
 }
 
-//function ro print random quote
-void print_random_line(FILE *istream, int line_index) {
-  printf("\nQuote of the day : \n");
+//function to return random quote
+char  print_random_line(FILE *istream, int line_index) {
   Line_Count(istream, line_index);
-  int ch;
-  while ((ch = fgetc(istream)) != EOF && ch != '\n') {
-    if (isprint(ch)) {
-      putchar(ch);
-    }
-  }
+  int ch,tot = 0;
+  char line[RSIZ][LSIZ];
+  int i = 0;
+
   printf("\n");
-}
+
+          while(fgets(line[i], LSIZ, istream)) 
+	{
+                 line[i][strlen(line[i]) - 1] = '\0';
+                 i++;
+        }
+
+         tot = i+1;
+         printf("\n The quote from line %d  is : \n",line_index + 1);
+
+        for(i = 0; i < 1; ++i)
+           {
+            printf(" %s\n", line[i]);
+           }
+
+return line_index;
+                                                        }
 
 
 int main(int argc, char *argv[] )
 {
-  int socQotd,new_socket,c,msgSize;
+  int socQotd,new_socket,c;
   struct sockaddr_in server, client;
-  char clMsg[20000];
+  char svMsg[20000],clReply[20000];
 
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -105,35 +119,40 @@ int main(int argc, char *argv[] )
     int lc = Line_Count(istream, RAND_MAX);
     assert(lc && lc < RAND_MAX);
 
-    for (int i = 0; i < 1; i++) {
+while(1)
+{
 
-	print_random_line(istream, rand() % lc);
-
-                                }
-
-  while((msgSize=recv(new_socket,clMsg,20000,0))>0)
-       {
-         write(new_socket,clMsg,strlen(clMsg));
-       }
+  print_random_line(istream, rand() % lc);
 
 
- if(msgSize==-1)
-   {
-     puts("Failed to receive message from the client :(");
-   }
+  strcpy(svMsg, "Quote of the day: \n");
+  printf("\n%s",svMsg);
+  send(new_socket,svMsg,20000,0);
 
- else if(msgSize==0)
-        {
-         puts("DISCONNECTED");
-         fflush(stdout);
-        }
+  if(send(new_socket,svMsg,strlen(svMsg),0)<0)
+    {
+     puts("Failed to send quote to the client :(");
+     return 1;
+}
 
-    fclose(istream);
+if(recv(new_socket,clReply,20000,0)<0)
+{
+puts("recv failed");
+break;
+}
+
+ fclose(istream);
+ close(socQotd);
+
+
+}
+
+   // fclose(istream);
 
 //closes here
 
 
-  close(socQotd);
+ // close(socQotd);
 
 return 0;
 }
