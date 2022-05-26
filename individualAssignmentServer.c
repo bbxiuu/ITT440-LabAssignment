@@ -10,6 +10,8 @@
 #include <time.h>
 #include <string.h>
 
+#define PORT 17
+
 int main(int argc, char *argv[] )
 {
 int socQotd,new_socket,c;
