@@ -30,13 +30,14 @@ server.sin_addr.s_addr=INADDR_ANY;
 server.sin_port=htons(17); //use port 17
 
 //bind
-if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
+/*if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
 {
 
 puts("bind failed");
 return 1;
 }
 puts("bind done");
+*/
 
 //listen
 listen (socQotd,3);
