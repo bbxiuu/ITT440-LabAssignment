@@ -16,10 +16,6 @@
 #define FILENAME "qotd.txt"
 
 
-//START testing 
-
-
-
 // Return line count, but stop once the count exceeds a maximum
   int Line_Count(FILE *istream, int line_index) {
   int lc = 0;
@@ -38,6 +34,7 @@
   return lc;
 }
 
+//function ro print random quote
 void print_random_line(FILE *istream, int line_index) {
   printf("\nQuote of the day : \n");
   Line_Count(istream, line_index);
@@ -50,12 +47,12 @@ void print_random_line(FILE *istream, int line_index) {
   printf("\n");
 }
 
-//END testing
+
 int main(int argc, char *argv[] )
 {
-  int socQotd,new_socket,c;
+  int socQotd,new_socket,c,msgSize;
   struct sockaddr_in server, client;
-  char printQuote[500];
+  char clMsg[20000];
 
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -102,17 +99,36 @@ int main(int argc, char *argv[] )
 
 //starts here
 
-srand((unsigned) time(NULL));
-  FILE *istream = fopen(FILENAME, "r");
-  assert(istream);
-  int lc = Line_Count(istream, RAND_MAX);
-  assert(lc && lc < RAND_MAX);
+    srand((unsigned) time(NULL));
+    FILE *istream = fopen(FILENAME, "r");
+    assert(istream);
+    int lc = Line_Count(istream, RAND_MAX);
+    assert(lc && lc < RAND_MAX);
 
-  for (int i = 0; i < 1; i++) {
-    
+    for (int i = 0; i < 1; i++) {
+
 	print_random_line(istream, rand() % lc);
-  }
-  fclose(istream);
+
+                                }
+
+  while((msgSize=recv(new_socket,clMsg,20000,0))>0)
+       {
+         write(new_socket,clMsg,strlen(clMsg));
+       }
+
+
+ if(msgSize==-1)
+   {
+     puts("Failed to receive message from the client :(");
+   }
+
+ else if(msgSize==0)
+        {
+         puts("DISCONNECTED");
+         fflush(stdout);
+        }
+
+    fclose(istream);
 
 //closes here
 

@@ -15,9 +15,9 @@
 
 int main(int argc, char *argv[])
 {
-int socQotd,C_socket,c;
+int socQotd,new_socket,c;
 struct sockaddr_in server;
-char buffer[1024];
+char clMsg[20000], svReply[20000];
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
@@ -42,6 +42,30 @@ puts("Connected \n");
 //qotd protocol
 
 //starts here 
+
+while(1)
+{
+printf("Enter a message: ");
+fgets(clMsg,20000,stdin);
+send(socQotd,clMsg,20000,0);
+
+if(send(socQotd,clMsg,strlen(clMsg),0)<0)
+{
+puts("Failed to send message to the server :(");
+return 1;
+}
+
+if(recv(socQotd,svReply,20000,0)<0)
+{
+puts("recv failed");
+break;
+}
+
+puts("_________________________________________\n");
+puts("SERVER REPLY: ");
+puts(svReply);
+
+}
 
 /*bzero(buffer, 1024);
 strcpy(buffer, "Quote received! Thank you & have a nice day <3 \n");
