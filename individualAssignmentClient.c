@@ -10,11 +10,12 @@
 #include <time.h>
 #include <string.h>
 
+#define PORT 17
+
 int main(int argc, char *argv[])
 {
 int socQotd,new_socket,c;
 struct sockaddr_in server;
-char *sent;
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
