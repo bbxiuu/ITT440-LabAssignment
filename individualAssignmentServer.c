@@ -10,13 +10,10 @@
 #include <time.h>
 #include <string.h>
 
-#define BACKLOG 10
-
 int main(int argc, char *argv[] )
 {
-int socQotd, new_socket,c,msg_size;
+int socQotd,c;
 struct sockaddr_in server, client;
-char cl_msg[20000];
 
 //creating socket
 socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -30,7 +27,7 @@ printf("Failed to create socket!");
 //preparing for socket address
 server.sin_family=AF_INET;
 server.sin_addr.s_addr=INADDR_ANY;
-server.sin_port=htons(17);
+server.sin_port=htons(17); //use port 17
 
 //bind
 if(bind(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
@@ -56,24 +53,6 @@ perror("FAILED TO ACCEPT");
 return 1;
 }
 puts("Connection accepted");
-
-
-while((msg_size=recv(new_socket,cl_msg,20000,0))>0)
-{
-write(new_socket,cl_msg,strlen(cl_msg));
-}
-
-
-if(msg_size==-1)
-{
-puts("FAILED TO RECEIVE MESSAGE");
-}
-
-else if(msg_size==0)
-{
-puts("DISCONNECTED");
-fflush(stdout);
-}
 
 close(socQotd);
 
