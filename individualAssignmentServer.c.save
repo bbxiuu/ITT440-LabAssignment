@@ -14,8 +14,8 @@
 
 #define PORT 17
 #define FILENAME "qotd.txt"
-#define LSIZ 1024
-#define RSIZ 50
+#define LSIZ 1000
+#define RSIZ 1000
 
 // Return line count, but stop once the count exceeds a maximum
   int Line_Count(FILE *istream, int line_index) {
@@ -39,10 +39,10 @@
 const char*  print_random_line(FILE *istream, int line_index) {
   Line_Count(istream, line_index);
   int ch,tot = 0;
-  char buffer[1024] = { 0 };
   char line[RSIZ][LSIZ];
-  char quote[sizeof(buffer)];
+  char quote[1000];
   int i = 0;
+  char* quote2prnt;
 
   printf("\n");
 
@@ -61,20 +61,19 @@ const char*  print_random_line(FILE *istream, int line_index) {
             puts(quote);
            }
 
+   strcpy(quote2prnt,quote);
+
    printf("\n");
 
-   return quote;
+   return quote2prnt;
                                                               }
 
 
 int main(int argc, char *argv[] )
 {
-  int socQotd,new_socket,c,msgSize,valread;
+  int socQotd,new_socket,c;
   struct sockaddr_in server, client;
-  //char quote[128];
-
-   char buffer[1024] = { 0 };
-   char svReply[sizeof(buffer)];
+  char svMsg[20000],clReply[20000],quote[128];
 
   //cleaning buffer
 //  memset(svMsg, '\0', sizeof(svMsg));
@@ -124,31 +123,73 @@ int main(int argc, char *argv[] )
 
 
   //qotd protocol
- 
+
+while(1)
+{
+printf("Enter a message: ");
+fgets(clReply,20000,stdin);
+send(socQotd,clReply,20000,0);
+
+if(send(socQotd,clReply,strlen(clReply),0)<0)
+{
+puts("FAILED TO SEND");
+return 1;
+}
+
+if(recv(socQotd,svMsg,20000,0)<0)
+{
+puts("recv failed");
+break;
+}
+
+puts("_________________________________________\n");
+puts("SERVER REPLY: ");
+puts(svMsg);
+
+}
+
+close(socQotd);
+/*
+ while(1)
+{
     srand((unsigned) time(NULL));
     FILE *istream = fopen(FILENAME, "r");
     assert(istream);
     int lc = Line_Count(istream, RAND_MAX);
     assert(lc && lc < RAND_MAX);
 
-    receive_random_line(istream, rand() % lc);
-
-
-    strcpy(svReply, "Quote of the day : \n");
-    valread = read(new_socket, buffer, 1024);
-    printf("%s\n", buffer);
-    send(new_socket, svReply, strlen(svReply), 0);
-    printf("Quote has been sent!\n");
-
-  // closing the connected socket
-    close(new_socket);
-  // closing the listening socket
-    shutdown(socQotd, SHUT_RDWR);
-
-    fclose(istream);
+  //receive_random_line(istream, rand() % lc);
 //  const char* qotd = print_random_line(istream, rand() % lc);
 //  strcpy(svMsg, qotd);
 
+  strcpy(svMsg, "HI CLIENT THIS IS SERVER/n");
+  //sending quote to the client
+  printf("Sending quote of the day...\n%s\n",svMsg);
+  write(new_socket,&svMsg,strlen(svMsg));
+  send(new_socket,svMsg,20000,0);
+
+  if(send(new_socket,svMsg,strlen(svMsg),0)<0)
+    {
+     puts("Failed to send quote to the client :(");
+     return 1;
+    }
+
+ //recv message from the client
+  if((recv(new_socket,clReply,20000,0))>0);
+    { printf("%s\n",clReply);}
+
+  if(recv(new_socket,clReply,20000,0)<0)
+    {
+     puts("recv failed");
+     break;
+    }
+
+ fclose(istream);
+ close(new_socket);
+ close(socQotd);
+
+}
  
+*/
 return 0;
 }
