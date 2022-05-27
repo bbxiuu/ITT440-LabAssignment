@@ -88,7 +88,7 @@ int main(int argc, char *argv[] )
 
 
   //qotd protocol
-//while((valread = read(new_socket, buffer, 1024))>0){
+
     srand((unsigned) time(NULL));
     FILE *istream = fopen(FILENAME, "r");
     assert(istream);
@@ -114,10 +114,10 @@ int main(int argc, char *argv[] )
 
          tot =i+1;
 
-         printf("\nRandom quote chosen from line : %d \n",line_index + 1);
+         printf("\nRandom quote chosen : \n");
         for(i = 0; i < 1; ++i)
            {
-            sprintf(quote,"%s", line[i]);
+            sprintf(quote,"%s", line[rand()%tot]);
             puts(quote);
            }
         strcpy(svReply, quote);
@@ -126,7 +126,6 @@ int main(int argc, char *argv[] )
 
 
  //sending random quote to the client
-//while((valread = read(new_socket, buffer, 1024))>0){
 
     valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
