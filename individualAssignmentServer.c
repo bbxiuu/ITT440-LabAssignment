@@ -75,6 +75,11 @@ int main(int argc, char *argv[] )
   struct sockaddr_in server, client;
   char svMsg[20000],clReply[20000],quote[128];
 
+  //cleaning buffer
+  memset(svMsg, '\0', sizeof(svMsg));
+  memset(clReply, '\0', sizeof(clReply));
+
+
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
     if(socQotd==-1)
@@ -116,51 +121,53 @@ int main(int argc, char *argv[] )
       }
     puts("Connection accepted!");
 
+
   //qotd protocol
 
-//starts here
 
+ while(1)
+{ 
     srand((unsigned) time(NULL));
     FILE *istream = fopen(FILENAME, "r");
     assert(istream);
     int lc = Line_Count(istream, RAND_MAX);
     assert(lc && lc < RAND_MAX);
 
-while(1)
-{
-
-  //print_random_line(istream, rand() % lc);
+  //receive_random_line(istream, rand() % lc);
   const char* qotd = print_random_line(istream, rand() % lc);
   strcpy(svMsg, qotd);
 
-  //strcpy(svMsg, "Quote of the day: \n");
-  printf("\n%s",svMsg);
+
+  //sending quote to the client
+  printf("Sending quote of the day...\n%s",svMsg);
   send(new_socket,svMsg,20000,0);
 
   if(send(new_socket,svMsg,strlen(svMsg),0)<0)
     {
      puts("Failed to send quote to the client :(");
      return 1;
-}
+    }
 
-if(recv(new_socket,clReply,20000,0)<0)
-{
-puts("recv failed");
-break;
-}
+ //recv message from the client
+  recv(new_socket,clReply,20000,0);
+  printf("%s\n",clReply);
+
+  if(recv(new_socket,clReply,20000,0)<0)
+    {
+     puts("recv failed");
+     break;
+    }
 
  fclose(istream);
+ close(new_socket);
  close(socQotd);
 
-
 }
+ 
 
-   // fclose(istream);
-
-//closes here
-
-
-  close(socQotd);
+ // fclose(istream);
+ //close(new_socket);
+ //close(socQotd);
 
 return 0;
 }
