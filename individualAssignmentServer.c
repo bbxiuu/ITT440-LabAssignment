@@ -32,54 +32,18 @@
     }
     previous = ch;
   }
+
   return lc;
 }
-
-//function to return random quote
-const char*  print_random_line(FILE *istream, int line_index) {
-  Line_Count(istream, line_index);
-  int ch,tot = 0;
-  char buffer[1024] = { 0 };
-  char line[RSIZ][LSIZ];
-  char quote[sizeof(buffer)];
-  int i = 0;
-
-  printf("\n");
-
-          while(fgets(line[i], LSIZ, istream)) 
-	{
-                 line[i][strlen(line[i]) - 1] = '\0';
-                 i++;
-        }
-
-         tot = i+1;
-         printf("\nThe quote from line %d  is : \n",line_index + 1);
-
-        for(i = 0; i < 1; ++i)
-           {
-            sprintf(quote,"%s", line[i]);
-            puts(quote);
-           }
-
-   printf("\n");
-
-   return quote;
-                                                              }
 
 
 int main(int argc, char *argv[] )
 {
   int socQotd,new_socket,c,msgSize,valread;
   struct sockaddr_in server, client;
-  //char quote[128];
 
    char buffer[1024] = { 0 };
    char svReply[sizeof(buffer)];
-
-  //cleaning buffer
-//  memset(svMsg, '\0', sizeof(svMsg));
-//  memset(clReply, '\0', sizeof(clReply));
-
 
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -124,21 +88,50 @@ int main(int argc, char *argv[] )
 
 
   //qotd protocol
- 
+//while((valread = read(new_socket, buffer, 1024))>0){
     srand((unsigned) time(NULL));
     FILE *istream = fopen(FILENAME, "r");
     assert(istream);
     int lc = Line_Count(istream, RAND_MAX);
     assert(lc && lc < RAND_MAX);
 
-    receive_random_line(istream, rand() % lc);
+    int line_index = Line_Count(istream, line_index);
+
+ 
+  int ch,tot=0;
+  char line[RSIZ][LSIZ];
+  char quote[sizeof(buffer)];
+  int i = 0;
 
 
-    strcpy(svReply, "Quote of the day : \n");
+  printf("\n");
+
+        while(fgets(line[i], LSIZ, istream))
+        {
+                 line[i][strlen(line[i]) - 1] = '\0';
+                 i++;
+        }
+
+         tot =i+1;
+
+         printf("\nRandom quote chosen from line : %d \n",line_index + 1);
+        for(i = 0; i < 1; ++i)
+           {
+            sprintf(quote,"%s", line[i]);
+            puts(quote);
+           }
+        strcpy(svReply, quote);
+
+       printf("\n****************************************************************************************************************************\n");
+
+
+ //sending random quote to the client
+//while((valread = read(new_socket, buffer, 1024))>0){
+
     valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
     send(new_socket, svReply, strlen(svReply), 0);
-    printf("Quote has been sent!\n");
+    printf("Quote has been sent!\n\n");
 
   // closing the connected socket
     close(new_socket);
@@ -150,5 +143,6 @@ int main(int argc, char *argv[] )
 //  strcpy(svMsg, qotd);
 
  
+
 return 0;
 }
