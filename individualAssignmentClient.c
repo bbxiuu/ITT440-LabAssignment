@@ -15,9 +15,13 @@
 
 int main(int argc, char *argv[])
 {
-int socQotd,new_socket,c;
+int socQotd, msgSize;
 struct sockaddr_in server;
-char clMsg[20000], svReply[20000];
+char svMsg[20000], clReply[1024];
+
+//cleaning buffer
+memset(svMsg,'\0',sizeof(svMsg));
+memset(clReply,'\0',sizeof(clReply));
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
@@ -27,9 +31,9 @@ printf("Failed to create socket!");
 }
 
 
-server.sin_addr.s_addr=inet_addr("192.168.6.4");//Server IP address
 server.sin_family=AF_INET;
 server.sin_port=htons(17);//use port 17
+server.sin_addr.s_addr=inet_addr("192.168.6.4");//Server IP address
 
 //connect to remote server
 if(connect(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
@@ -39,41 +43,33 @@ return 1;
 }
 puts("Connected \n");
 
-//qotd protocol
+//qotd protocol 
 
-//starts here 
 
-while(1)
-{
-printf("Enter a message: ");
-fgets(clMsg,20000,stdin);
-send(socQotd,clMsg,20000,0);
+       if(msgSize = (recv(socQotd,svMsg,strlen(svMsg),0))>0)
+       {
+          //recv quote from server
+          recv(socQotd,svMsg,strlen(svMsg),0);
+          printf("\nQuote of the day : \n");
+          printf("\n%s\n",svMsg);
 
-if(send(socQotd,clMsg,strlen(clMsg),0)<0)
-{
-puts("Failed to send message to the server :(");
-return 1;
-}
 
-if(recv(socQotd,svReply,20000,0)<0)
-{
-puts("recv failed");
-break;
-}
+        if(msgSize < 0)
+          {
+           puts("Failed to receive quote from the server :(");
+          }
 
-puts("_________________________________________\n");
-puts("SERVER REPLY: ");
-puts(svReply);
+        else if(msgSize==0)
+        {
 
-}
+         strcpy(clReply,"\nQuote received! Thank you & have a nice day <3");
+         send(socQotd,clReply, strlen(clReply) ,0);
+         fflush(stdout);
+        }
 
-/*bzero(buffer, 1024);
-strcpy(buffer, "Quote received! Thank you & have a nice day <3 \n");
-printf("Message from client : %s\n", buffer);
-send(socQotd, buffer, strlen(buffer), 0);
-*/
-//closes here
-close(socQotd);
+         close(socQotd);
+       }
+
 return 0;
 }
 
