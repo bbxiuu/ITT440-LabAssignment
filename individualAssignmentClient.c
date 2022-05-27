@@ -15,13 +15,15 @@
 
 int main(int argc, char *argv[])
 {
-int socQotd, msgSize;
+int socQotd,new_socket, msgSize,c,valread;
 struct sockaddr_in server;
-char svMsg[20000], clReply[1024];
+
+char buffer[1024] = { 0 };
+char clMsg[sizeof(buffer)];
 
 //cleaning buffer
-memset(svMsg,'\0',sizeof(svMsg));
-memset(clReply,'\0',sizeof(clReply));
+//memset(svMsg,'\0',sizeof(svMsg));
+//memset(clReply,'\0',sizeof(clReply));
 
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
@@ -41,35 +43,18 @@ if(connect(socQotd,(struct sockaddr *)&server, sizeof(server))<0)
 puts("connect error");
 return 1;
 }
-puts("Connected \n");
+puts("Connected successfully! \n");
 
-//qotd protocol 
+//qotd protocol
 
+strcpy(clMsg,"\nHello from Client!\n");
+send(socQotd, clMsg, strlen(clMsg), 0);
+    printf("\nGreeting server...\n\n");
+    valread = read(socQotd, buffer, 1024);
+    printf("%s\n", buffer);
+ 
+    // closing the connected socket
+    close(socQotd);
+    return 0;
 
-       if(msgSize = (recv(socQotd,svMsg,strlen(svMsg),0))>0)
-       {
-          //recv quote from server
-          recv(socQotd,svMsg,strlen(svMsg),0);
-          printf("\nQuote of the day : \n");
-          printf("\n%s\n",svMsg);
-
-
-        if(msgSize < 0)
-          {
-           puts("Failed to receive quote from the server :(");
-          }
-
-        else if(msgSize==0)
-        {
-
-         strcpy(clReply,"\nQuote received! Thank you & have a nice day <3");
-         send(socQotd,clReply, strlen(clReply) ,0);
-         fflush(stdout);
-        }
-
-         close(socQotd);
-       }
-
-return 0;
 }
-
