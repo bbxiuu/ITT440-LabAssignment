@@ -44,6 +44,7 @@ int main(int argc, char *argv[] )
 
    char buffer[1024] = { 0 };
    char svReply[sizeof(buffer)];
+   char svReply2[sizeof(buffer)];
 
   //creating socket
     socQotd = socket(AF_INET,SOCK_STREAM,0);
@@ -68,7 +69,6 @@ int main(int argc, char *argv[] )
       }
      puts("\nSocket is successfully binded! ");
 
-
   //listen
     listen (socQotd,3);
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[] )
     c=sizeof(struct sockaddr_in);
 
 
-  //server client connection
+ //server client connection
     new_socket=accept(socQotd,(struct sockaddr *)&client,(socklen_t*)&c);
     if(new_socket<0)
       {
@@ -85,7 +85,6 @@ int main(int argc, char *argv[] )
        return 1;
       }
     puts("Connection accepted!");
-
 
   //qotd protocol
 
@@ -120,7 +119,8 @@ int main(int argc, char *argv[] )
             sprintf(quote,"%s", line[rand()%tot]);
             puts(quote);
            }
-        strcpy(svReply, quote);
+       strcpy(svReply, "Hi from server!\n\nToday's quote is : ");
+       strcpy(svReply2, quote);
 
        printf("\n****************************************************************************************************************************\n");
 
@@ -130,6 +130,7 @@ int main(int argc, char *argv[] )
     valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
     send(new_socket, svReply, strlen(svReply), 0);
+    send(new_socket, svReply2, strlen(svReply2), 0);
     printf("Quote has been sent!\n\n");
 
   // closing the connected socket
@@ -138,10 +139,6 @@ int main(int argc, char *argv[] )
     shutdown(socQotd, SHUT_RDWR);
 
     fclose(istream);
-//  const char* qotd = print_random_line(istream, rand() % lc);
-//  strcpy(svMsg, qotd);
-
- 
 
 return 0;
 }
