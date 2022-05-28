@@ -9,9 +9,10 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <string.h>
+#include <assert.h>
 
 #define PORT 17
-#define FILENAME "qotd.txt"
+#define FILENAME "qotdRcv.txt"
 
 int main(int argc, char *argv[])
 {
@@ -41,20 +42,23 @@ return 1;
 }
 puts("Connected successfully! \n");
 
-//qotd protocol
+//receive qotd and write into qotdRcv.txt
 
-strcpy(clMsg,"\nHello from Client!\n");
-send(socQotd, clMsg, strlen(clMsg), 0);
+ FILE *istream = fopen(FILENAME, "w");
+ assert(istream);
+
+    strcpy(clMsg,"\nHello from Client!\n");
+    send(socQotd, clMsg, strlen(clMsg), 0);
     printf("\nGreeting server...\n\n");
-valread = read(socQotd, buffer, 1024);
+    valread = read(socQotd, buffer, 1024);
     printf("%s\n", buffer);
     valread = read(socQotd, buffer, 1024);
     printf("%s\n\n", buffer);
+    fprintf(istream,"%s",buffer);
 
- 
     // closing the connected socket
     close(socQotd);
-
+    fclose(istream);
 
     return 0;
 
