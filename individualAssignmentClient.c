@@ -47,14 +47,22 @@ puts("Connected successfully! \n");
 
 //qotd protocol
 
+//TRYYYYYYYYYYYYYYYYYYYY
+
 strcpy(clMsg,"\nHello from Client!\n");
 send(socQotd, clMsg, strlen(clMsg), 0);
     printf("\nGreeting server...\n\n");
-    valread = read(socQotd, buffer, 1024);
+valread = read(socQotd, buffer, 1024);
     printf("%s\n", buffer);
+    valread = read(socQotd, buffer, 1024);
+    printf("%s\n\n", buffer);
+
+//ENDOFTRYYYYYYYYYYYYYYY
  
     // closing the connected socket
     close(socQotd);
+
+
     return 0;
 
 }
