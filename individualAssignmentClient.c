@@ -51,9 +51,8 @@ puts("Connected successfully! \n");
     send(socQotd, clMsg, strlen(clMsg), 0);
     printf("\nGreeting server...\n\n");
     valread = read(socQotd, buffer, 1024);
-    printf("%s\n", buffer);
-    valread = read(socQotd, buffer, 1024);
     printf("%s\n\n", buffer);
+
     fprintf(istream,"%s",buffer);
 
     // closing the connected socket
