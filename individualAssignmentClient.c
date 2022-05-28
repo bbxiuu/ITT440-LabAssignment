@@ -21,10 +21,6 @@ struct sockaddr_in server;
 char buffer[1024] = { 0 };
 char clMsg[sizeof(buffer)];
 
-//cleaning buffer
-//memset(svMsg,'\0',sizeof(svMsg));
-//memset(clReply,'\0',sizeof(clReply));
-
 //creating socket
 socQotd=socket(AF_INET, SOCK_STREAM, 0);
 if(socQotd==-1)
@@ -47,8 +43,6 @@ puts("Connected successfully! \n");
 
 //qotd protocol
 
-//TRYYYYYYYYYYYYYYYYYYYY
-
 strcpy(clMsg,"\nHello from Client!\n");
 send(socQotd, clMsg, strlen(clMsg), 0);
     printf("\nGreeting server...\n\n");
@@ -57,7 +51,6 @@ valread = read(socQotd, buffer, 1024);
     valread = read(socQotd, buffer, 1024);
     printf("%s\n\n", buffer);
 
-//ENDOFTRYYYYYYYYYYYYYYY
  
     // closing the connected socket
     close(socQotd);
