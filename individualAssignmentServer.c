@@ -119,13 +119,14 @@ int main(int argc, char *argv[] )
             sprintf(quote,"%s", line[rand()%tot]);
             puts(quote);
            }
-       strcpy(svReply, "Hi from server!\n\nToday's quote is : ");
-       strcpy(svReply2, quote);
 
        printf("\n****************************************************************************************************************************\n");
 
 
  //sending random quote to the client
+    
+    strcpy(svReply, "Hi from server!\n\nToday's quote is : ");
+    strcpy(svReply2, quote);
 
     valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
