@@ -10,7 +10,7 @@ from multiprocessing import Process
 def calcLOG(i):
     print("\nCalculate for Log:",i)
     i=float(i)
-    answer=(math.log(10,i))
+    answer=math.log(i)
     print("\nAnswer:",answer)
     return answer
 
