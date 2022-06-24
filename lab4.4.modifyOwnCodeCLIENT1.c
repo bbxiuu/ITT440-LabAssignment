@@ -9,7 +9,10 @@ int main(int argc , char *argv[])
 {
 	int socket_desc;
 	struct sockaddr_in server;
-	char *message , server_reply[2000];
+	char server_reply[2000];
+        char buffer[1024] = { 0 };
+        char message[sizeof(buffer)];
+
 
 	//Create socket
 	socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -31,8 +34,12 @@ int main(int argc , char *argv[])
 
 	puts("Connected \n");
 
+       while(1){
+
 	//Send some data
-	message = "connect";
+	printf("Client 1 : ");
+        scanf("%s", message);
+
 	if( send(socket_desc , message , strlen(message) , 0) < 0)
 	{
 		puts("Send failed");
@@ -44,9 +51,10 @@ int main(int argc , char *argv[])
 	{
 		puts("recv failed");
 	}
-	puts("Reply received\n");
+	puts("Server reply : ");
 	puts(server_reply);
 
+        }
         close(socket_desc);
 	return 0;
 }
