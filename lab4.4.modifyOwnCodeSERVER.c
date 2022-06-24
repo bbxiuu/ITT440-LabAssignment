@@ -39,23 +39,29 @@ int main(int argc , char *argv[])
         //Accept and incoming connection
         puts("Waiting for incoming connections...");
         c = sizeof(struct sockaddr_in);
-        while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
-        {
-                puts("Connection accepted");
 
+        while(1)
+        {
+               new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c); 
+                puts("Connection accepted\n");
+
+                while(1){
                 //Message from Client
                 if( recv(new_socket, client_message , 2000 , 0) < 0)
                     {
                       puts("recv failed");
                     }
-                 
-                 puts("Reply received\n");
+
+
+                 printf("Client :");
                  puts(client_message);
 
                 //Reply to the client
                 printf("Server : ");
                 scanf("%s", message);
+                printf("\n");
                 write(new_socket , message , strlen(message));
+                }
         }
 
         if (new_socket<0)
