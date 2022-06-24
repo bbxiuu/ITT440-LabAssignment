@@ -37,22 +37,23 @@ int main(int argc , char *argv[])
        while(1){
 
 	//Send some data
-	printf("Client 1 : ");
-        scanf("%s", message);
+	printf("Client  : ");
+        scanf(" %s", message);
 
 	if( send(socket_desc , message , strlen(message) , 0) < 0)
 	{
 		puts("Send failed");
 		return 1;
 	}
-	puts("Data Send\n");
+
                     //Receive a reply from the server
 	if( recv(socket_desc, server_reply , 2000 , 0) < 0)
 	{
 		puts("recv failed");
 	}
-	puts("Server reply : ");
+	printf("Server : ");
 	puts(server_reply);
+        printf("\n");
 
         }
         close(socket_desc);
